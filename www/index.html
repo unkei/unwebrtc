@@ -36,6 +36,7 @@
   </p>
   
   
+  <script src="https://cdn.socket.io/socket.io-1.3.5.js"></script>
   <script>
   var localVideo = document.getElementById('local-video');
   var remoteVideo = document.getElementById('remote-video');
@@ -83,6 +84,7 @@
 	console.log(evt);
     setOffer(evt);
 	sendAnswer(evt);
+    peerStarted = true;
   }
   
   function onAnswer(evt) {
@@ -104,6 +106,8 @@
 	console.log(text);
 	
 	textForSendSDP.value = text;
+
+    socket.json.send(sdp);
   }
   
   function sendCandidate(candidate) {
@@ -113,6 +117,8 @@
 
 	textForSendICE.value = (textForSendICE.value + CR + iceSeparator + CR + text + CR);
 	textForSendICE.scrollTop = textForSendICE.scrollHeight;
+
+    socket.json.send(candidate);
   }
   
   // ---------------------- video handling -----------------------
@@ -232,7 +238,7 @@
   // start the connection upon user request
   function connect() {
     //if (!peerStarted && localStream && channelReady) {
-	if (!peerStarted && localStream) {
+	if (!peerStarted && localStream && socketReady) {
       sendOffer();
       peerStarted = true;
     } else {
@@ -252,6 +258,36 @@
     peerStarted = false;    
   }
 
+  // ---- socket ------
+  // create socket
+  var socketReady = false;
+  var port = 9001;
+  var socket = io.connect('http://localhost:' + port + '/');
+  // socket: channel connected
+  socket.on('connect', onOpened)
+        .on('message', onMessage);
+
+  function onOpened(evt) {
+    console.log('socket opened.');
+    socketReady = true;
+  }
+
+  // socket: accept connection request
+  function onMessage(evt) {
+    if (evt.type === 'offer') {
+      console.log("Received offer, set offer, sending answer....")
+      onOffer(evt);
+    } else if (evt.type === 'answer' && peerStarted) {
+      console.log('Received answer, settinng answer SDP');
+      onAnswer(evt);
+    } else if (evt.type === 'candidate' && peerStarted) {
+      console.log('Received ICE candidate...');
+      onCandidate(evt);
+    } else if (evt.type === 'user dissconnected' && peerStarted) {
+      console.log("disconnected");
+      stop();
+    }
+  }
   </script>
 </body>
 </html>
