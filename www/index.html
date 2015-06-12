@@ -261,8 +261,7 @@
   // ---- socket ------
   // create socket
   var socketReady = false;
-  var port = 8000;
-  var socket = io.connect('http://localhost:' + port + '/');
+  var socket = io.connect();
   // socket: channel connected
   socket.on('connect', onOpened)
         .on('message', onMessage);
