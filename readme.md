@@ -2,13 +2,11 @@ WebRTC trial
 ============
 WebRTC on browser with simple signalling
 
-1. running a simple node websocket server to signal SDP and ICE candidates.
-2. run `python -m SimpleHTTPServer` in ./www
-3. run `node signalling.js` in ./
-4. open two browsers with the same URL, http://localhost:8000/.
-5. press **Start video** button in both browsers
-6. press **Connect** button in both browsers
-7. SDP and ICE candidates were exchanged via web socket and web rtc started!!
+1. run `node backend.js` in ./, it is web front end server and web socket server for signalling
+2. open two browsers with the same URL, http://localhost:8000/.
+3. press **Start video** button in both browsers
+4. press **Connect** button in one browser
+5. SDP and ICE candidates were exchanged via web socket and web rtc started!!
 
 reference
 ---------
