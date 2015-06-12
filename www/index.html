@@ -4,6 +4,8 @@
   <title>WebRTC 1 to 1 handshake</title>  
 </head>
 <body>
+  <button type="button" onclick="login();">Login</button>
+  &nbsp;&nbsp;&nbsp;&nbsp;
   <button type="button" onclick="startVideo();">Start video</button>
   <button type="button" onclick="stopVideo();">Stop video</button>
   &nbsp;&nbsp;&nbsp;&nbsp;
@@ -260,11 +262,21 @@
 
   // ---- socket ------
   // create socket
+  function login() {
+    if (!socketReady) {
+      socket = io.connect();
+      // socket: channel connected
+      socket.on('connect', onOpened)
+            .on('message', onMessage);
+    }
+  }
+
   var socketReady = false;
-  var socket = io.connect();
+  var socket = null;
+//  var socket = io.connect();
   // socket: channel connected
-  socket.on('connect', onOpened)
-        .on('message', onMessage);
+//  socket.on('connect', onOpened)
+//        .on('message', onMessage);
 
   function onOpened(evt) {
     console.log('socket opened.');
