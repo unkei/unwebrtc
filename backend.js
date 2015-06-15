@@ -2,45 +2,28 @@ var port = process.env.PORT || 8000;
 var http = require('http');
 var express = require('express');
 var app = express();
-var WebSocketServer = require('ws').Server;
+var server = http.createServer(app).listen(port);
+var io = require('socket.io').listen(server);
+var connectionCount = 0;
 
 app.use(express.static(__dirname + '/www'));
 app.get('/', function(req, res) {
     res.sendFile(__dirname + '/www/index.html');
 });
 
-var server = http.createServer(app);
 server.listen(port, function() {
     console.log("Listening on port " + port + "...");
 });
 
-var wss = new WebSocketServer({server: server});
-var connections = [];
-
-wss.on('connection', function(socket) {
-    connections.push(socket);
-    console.log("new socket connected :" + connections.length);
-    socket.on('close', function () {
-        connections = connections.filter(function (conn, i) {
-            return (conn === socket) ? false : true;
-        });
-        console.log("socket closed :" + connections.length);
-    });
+io.on('connection', function(socket) {
+    console.log("new socket connected :" + ++connectionCount);
 
     socket.on('message', function(message) {
-        broadcast(socket, message);
+        socket.broadcast.emit('message', message);
     });
  
     socket.on('disconnect', function() {
-        broadcast(socket, '{"type": "user disconnected"}');
+        console.log("socket closed :" + --connectionCount);
+        socket.broadcast.emit('user disconnected');
     });
 });
-
-function broadcast(ws, msg) {
-    console.log("broadcast(" + msg + ")");
-    connections.forEach(function (con, i) {
-        if (ws !== con) {
-            con.send(msg);
-        }
-    });
-}
