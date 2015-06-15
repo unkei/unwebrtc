@@ -129,7 +129,7 @@
       localStream = stream;
       localVideo.src = window.webkitURL.createObjectURL(stream);
       localVideo.play();
-	  localVideo.volume = 1;
+	  localVideo.volume = 0;
     },
     function (error) { // error
       console.error('An error occurred: [CODE ' + error.code + ']');
