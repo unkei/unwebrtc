@@ -127,7 +127,7 @@
 	navigator.webkitGetUserMedia({video: true, audio: true},
     function (stream) { // success
       localStream = stream;
-      localVideo.src = window.webkitURL.createObjectURL(stream);
+      localVideo.src = URL.createObjectURL(stream);
       localVideo.play();
 	  localVideo.volume = 0;
     },
@@ -177,7 +177,7 @@
     // when remote adds a stream, hand it on to the local video element
     function onRemoteStreamAdded(event) {
       console.log("Added remote stream");
-      remoteVideo.src = window.webkitURL.createObjectURL(event.stream);
+      remoteVideo.src = URL.createObjectURL(event.stream);
     }
 
     // when remote removes a stream, remove it from the local video element
