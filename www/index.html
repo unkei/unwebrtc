@@ -234,6 +234,10 @@
 	peerConnection.setRemoteDescription(new RTCSessionDescription(evt));
   }
   
+  function sendDisconnect() {
+    socket.json.send({"type":"user disconnected");
+  }
+
   // -------- handling user UI event -----
   // start the connection upon user request
   function connect() {
@@ -249,6 +253,7 @@
   // stop the connection upon user request
   function hangUp() {
     console.log("Hang up.");
+    sendDisconnect();
     stop();
   }
 
@@ -282,7 +287,7 @@
     } else if (evt.type === 'candidate' && peerStarted) {
       console.log('Received ICE candidate...');
       onCandidate(evt);
-    } else if (evt.type === 'user dissconnected' && peerStarted) {
+    } else if (evt.type === 'user disconnected' && peerStarted) {
       console.log("disconnected");
       stop();
     }
