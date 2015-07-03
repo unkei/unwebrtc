@@ -18,12 +18,32 @@ server.listen(port, function() {
 io.on('connection', function(socket) {
     console.log("new socket connected :" + ++connectionCount);
 
+    socket.on('enter', function(roomname) {
+        socket.join(roomname);
+    });
+
     socket.on('message', function(message) {
-        socket.broadcast.emit('message', message);
+        emitMessage('message', message);
     });
  
     socket.on('disconnect', function() {
         console.log("socket closed :" + --connectionCount);
-        socket.broadcast.emit('user disconnected');
+        emitMessage('user disconnected');
     });
+
+    function emitMessage(type, message) {
+        var roomname;
+        if (socket.rooms.length > 1) {
+            console.log("socket is in the rooms " + socket.rooms);
+            roomname = socket.rooms[1];
+        }
+
+        if (roomname) {
+            console.log("messgeing in the room, " + roomname);
+            socket.broadcast.to(roomname).emit(type, message);
+        } else {
+            console.log("messgeing in public");
+            socket.broadcast.emit(type, message);
+        }
+    }
 });

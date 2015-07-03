@@ -274,6 +274,9 @@
   function onOpened(evt) {
     console.log('socket opened.');
     socketReady = true;
+
+    var roomname = getRoomName();
+    socket.emit('enter', roomname)
   }
 
   // socket: accept connection request
@@ -291,6 +294,18 @@
       console.log("disconnected");
       stop();
     }
+  }
+
+  function getRoomName() {
+      var url = document.location.href;
+      var args = url.split('?');
+      if (args.length > 1) {
+          var room = args[1];
+          if (room != "") {
+              return room;
+          }
+      }
+      return "_defaultroom"
   }
   </script>
 </body>
