@@ -10,7 +10,8 @@
     navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
 
     // PeerJS object
-    var peer = new Peer({host:'unpeerjs.herokuapp.com', secure:true, port:443, key: 'peerjs', debug: 3})
+    var peer = new Peer({host:'peerserver-rhj-001.herokuapp.com', secure:true, port:443, key: 'peerjs', debug: 3})
+    // var peer = new Peer({host:'unpeerjs.herokuapp.com', secure:true, port:443, key: 'peerjs', debug: 3})
 
     peer.on('open', function(){
       $('#my-id').text(peer.id);
@@ -149,6 +150,7 @@
       // UI stuff
       window.existingCall = call;
       $('#their-id').text(call.peer);
+      $('#their-id').val(call.peer);
       console.log('their-id==', call.peer);
       call.on('close', step2);
       $('#step1, #step2').hide();
