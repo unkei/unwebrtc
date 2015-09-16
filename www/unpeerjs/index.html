@@ -54,14 +54,8 @@
       });
 
       // Connect data
+      
       $('#connect-data').click(function(){
-        /*
-        var c = peer.connect($('#callto-id').val(), {
-          label: 'RTCDataChannel',
-          serialization: 'none',
-          metadata: {message: 'hi i want to chat with you!'}
-        });
-        */
         var connectId = $('#their-id').val();
         if (connectId == null || connectId.length == 0) {
           connectId = $('#callto-id').val();
@@ -69,10 +63,16 @@
 
         console.log('peer.connect with connectId:', connectId);
         var c = peer.connect(connectId, {label: 'RTCDataChannel'});
+        /*
         c.on('open', function() {
           connect(c);
         });
-        c.on('error', function(err) { alert(err); });
+        c.on('error', function(err) {
+          alert(err);
+        });
+        */
+        c.on('connection', connect(c));
+
       });
 
       // Close a connection.
@@ -161,14 +161,14 @@
       //if (c.label === 'RTCDataChannel') {
         c.on('open', function() {
           
+          /*
           c.on('data', function(data) {
             console.log('==Received', data);
           });
-
+          */
           // Send messages
-          c.send('==Hello!');
+          c.send('Hello!');
         });
-        c.send('Hello!');
 
         c.on('data', function(data) {
           console.log('Received', data);
